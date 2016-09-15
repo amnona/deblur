@@ -174,13 +174,13 @@ def deblur(input_seqs, mean_error=0.005,
                 # remove errors due to (PCR?) indels (saw in 22 mock mixture)
                 correction_value = correction_value * indel_prob
 
-            # met all the criteria - so correct the frequency of the neighbor
-            seq_j.frequency -= correction_value
-
             #if tracing the sequence, show the info
             if trace_seq is not None:
                 if seq_j.sequence.replace('-','') == trace_seq:
-                    print('sequence %s (%f reads), num_indels=%d, num_sub=%d, correction=%f' % (seq_i.sequence, seq_i.frequency, num_indels, num_substitutions, correction_value))
+                    print('freq %f, sequence %s (%f reads), num_indels=%d, num_sub=%d, correction=%f' % (seq_j.frequency, seq_i.sequence.replace('-',''), seq_i.frequency, num_indels, num_substitutions, correction_value))
+
+            # met all the criteria - so correct the frequency of the neighbor
+            seq_j.frequency -= correction_value
 
     result = [s for s in seqs if round(s.frequency) > 0]
     logger.info('%d unique sequences left following deblurring' % len(result))
