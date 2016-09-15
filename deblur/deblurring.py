@@ -67,7 +67,7 @@ def get_sequences(input_seqs):
 
 def deblur(input_seqs, mean_error=0.005,
            error_dist=None,
-           indel_prob=0.01, indel_max=3):
+           indel_prob=0.01, indel_max=3,trace_seq=None):
     """Deblur the reads
 
     Parameters
@@ -86,6 +86,8 @@ def deblur(input_seqs, mean_error=0.005,
         Indel probability (same for N indels). Default: 0.01
     indel_max : int, optional
         The maximal number of indels expected by errors. Default: 3
+    trace_seq : str, optional
+        None (default) to disable, a sequence string in order to see what impacts it's frequency
 
     Results
     -------
@@ -174,6 +176,11 @@ def deblur(input_seqs, mean_error=0.005,
 
             # met all the criteria - so correct the frequency of the neighbor
             seq_j.frequency -= correction_value
+
+            #if tracing the sequence, show the info
+            if trace_seq is not None:
+                if seq_j.sequence.replace('-','') == trace_seq:
+                    print('sequence %s (%f reads), num_indels=%d, num_sub=%d, correction=%f' % (seq_i.sequence, seq_i.frequency, num_indels, num_substitutions, correction_value))
 
     result = [s for s in seqs if round(s.frequency) > 0]
     logger.info('%d unique sequences left following deblurring' % len(result))
