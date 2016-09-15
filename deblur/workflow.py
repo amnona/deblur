@@ -602,7 +602,8 @@ def create_otu_table(output_fp, deblurred_list,
 def launch_workflow(seqs_fp, working_dir, mean_error, error_dist,
                     indel_prob, indel_max, trim_length, min_size, ref_fp,
                     ref_db_fp, negate, threads_per_sample=1,
-                    sim_thresh=None, coverage_thresh=None):
+                    sim_thresh=None, coverage_thresh=None,
+                    trace_seq=None):
     """Launch full deblur workflow for a single post split-libraries fasta file
 
     Parameters
@@ -639,6 +640,9 @@ def launch_workflow(seqs_fp, working_dir, mean_error, error_dist,
     coverage_thresh: float, optional
         the minimal coverage for alignment of a sequence to the database.
         if None, take the defaults (0.3 for negate=False, 0.95 for negate=True)
+    trace_seq: str, optional
+        None (default) to not trace, or sequence string in order to trace effects
+        on that sequence
 
     Return
     ------
@@ -690,7 +694,8 @@ def launch_workflow(seqs_fp, working_dir, mean_error, error_dist,
                             "%s.deblur" % basename(output_msa_fp))
     with open(output_deblur_fp, 'w') as f:
         seqs = deblur(sequence_generator(output_msa_fp), mean_error,
-                      error_dist, indel_prob, indel_max)
+                      error_dist, indel_prob, indel_max,
+                      trace_seq)
         if seqs is None:
             warnings.warn('multiple sequence alignment file %s contains '
                           'no sequences' % output_msa_fp, UserWarning)
